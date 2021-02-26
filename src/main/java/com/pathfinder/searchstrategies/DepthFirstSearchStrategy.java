@@ -6,12 +6,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.concurrent.NotThreadSafe;
+
 import com.google.common.base.Stopwatch;
 import com.pathfinder.chessgame.Position;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@NotThreadSafe
 public class DepthFirstSearchStrategy implements SearchStrategy {
 
     private final int maxDepth;

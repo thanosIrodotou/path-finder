@@ -64,4 +64,8 @@ in a nice way.
 
 Benchmarking is another addition I'd make if time allowed. We can use JMH to write a very simple  
 benchmarking suit which will actually give us a standard to compare against while improving the code  
-or actually comparing different search implementations.
+or actually comparing different search implementations. I'm included a very rough setup of how benchmarking  
+could be done although the implementation is far from complete and it does raise some interesting issues  
+like ThreadSafety and running searches concurrently. If you're interested the benchmarks class is  
+`PathFinderBenchmark` (you should be able to run it in your IDE) but please understand it is more of a  
+proof of concept at the moment.
