@@ -42,7 +42,7 @@ public class PathFinderBenchmark {
     @Setup
     public void setup() {
         this.startPosition = new KnightPosition(1, 3);
-        this.endPosition = new KnightPosition(3, 1);
+        this.endPosition = new KnightPosition(5, 3);
         this.pathFinder = new PathFinder(new DepthFirstSearchStrategy(3));
     }
 

@@ -18,9 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 public class DepthFirstSearchStrategy implements SearchStrategy {
 
     private final int maxDepth;
-    private Collection<List<Position>> posiblePaths;
-    private LinkedList<Position> currentPath;
-    private Position targetPosition;
 
     public DepthFirstSearchStrategy(int maxDepth) {
         this.maxDepth = maxDepth;
@@ -28,22 +25,32 @@ public class DepthFirstSearchStrategy implements SearchStrategy {
 
     @Override
     public Collection<List<Position>> findPaths(Position currentPosition, Position targetPosition) {
-        this.targetPosition = targetPosition;
-        posiblePaths = new HashSet<>();
-        currentPath = new LinkedList<>();
+        final Collection<List<Position>> possiblePaths = new HashSet<>();
+        final LinkedList<Position> currentPath = new LinkedList<>();
 
-        runTimedDepthFirstSearch(currentPosition);
+        runTimedDepthFirstSearch(possiblePaths, currentPosition, targetPosition, currentPath);
 
-        return posiblePaths;
+        return possiblePaths;
     }
 
-    private void runTimedDepthFirstSearch(Position currentPosition) {
+    private void runTimedDepthFirstSearch(
+            Collection<List<Position>> possiblePaths,
+            Position currentPosition,
+            Position targetPosition,
+            LinkedList<Position> currentPath
+    ) {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        depthFirstSearch(currentPosition, 0);
+        depthFirstSearch(possiblePaths, currentPosition, targetPosition, currentPath, 0);
         log.info("Search took: {}", stopwatch.stop());
     }
 
-    private void depthFirstSearch(Position currentPosition, int currentDepth) {
+    private void depthFirstSearch(
+            Collection<List<Position>> possiblePaths,
+            Position currentPosition,
+            Position targetPosition,
+            LinkedList<Position> currentPath,
+            int currentDepth
+    ) {
         if (currentDepth > maxDepth) {
             log.debug("Depth restriction reached.\nCurrent depth is: {}", currentDepth);
             return;
@@ -52,7 +59,7 @@ public class DepthFirstSearchStrategy implements SearchStrategy {
         currentPath.add(currentPosition);
 
         if (currentPosition.equals(targetPosition)) {
-            posiblePaths.add(new ArrayList<>(currentPath));
+            possiblePaths.add(new ArrayList<>(currentPath));
             log.debug("Found target position. Distance was: {}, path was: {}", currentDepth,
                     currentPath);
             // Minor optimisation to break ourselves out of the recursive loop and save some stack
@@ -64,7 +71,7 @@ public class DepthFirstSearchStrategy implements SearchStrategy {
         }
 
         List<Position> possibleMoves = currentPosition.buildPossibleMoves();
-        possibleMoves.forEach(move -> depthFirstSearch(move, currentDepth + 1));
+        possibleMoves.forEach(move -> depthFirstSearch(possiblePaths, move, targetPosition, currentPath, currentDepth + 1));
 
         currentPath.removeLastOccurrence(currentPosition);
     }
