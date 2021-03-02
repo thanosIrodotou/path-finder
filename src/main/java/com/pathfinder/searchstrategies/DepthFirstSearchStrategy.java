@@ -71,7 +71,14 @@ public class DepthFirstSearchStrategy implements SearchStrategy {
         }
 
         List<Position> possibleMoves = currentPosition.buildPossibleMoves();
-        possibleMoves.forEach(move -> depthFirstSearch(possiblePaths, move, targetPosition, currentPath, currentDepth + 1));
+        // We should avoid adding stack calls if we know that the currentDepth + 1 is going to hit
+        // the depth limit. This won't have an impact for small problem spaces like a chessboard but
+        // it can for large and even unlimited ones.
+        if (currentDepth + 1 <= 3) {
+            possibleMoves.forEach(
+                    move -> depthFirstSearch(possiblePaths, move, targetPosition, currentPath,
+                            currentDepth + 1));
+        }
 
         currentPath.removeLastOccurrence(currentPosition);
     }
